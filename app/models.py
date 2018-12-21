@@ -1,6 +1,8 @@
+"""This module will contain all database models"""
 from app import db
 
 class User(db.Model):
+    """User class will contain id, username, email, and password for individual users"""
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
