@@ -1,7 +1,8 @@
 """Routes module will have all endpoints associated with the flask application"""
 from app import app, db
 from app.models import User
-from flask import jsonify
+from flask import jsonify, request
+import json
 
 
 @app.route('/')
@@ -28,3 +29,18 @@ def isEmailUnique(email):
         if(u.email == email):
             return jsonify({'isUnique': False})
     return jsonify({'isUnique': True})
+
+
+@app.route('/api/v1.0/registration', methods=['POST'])
+def registerUser():
+    """registerUser will register the user to project-galaxy"""
+    if request.method == "POST":
+        json_dict = json.loads(request.data)
+
+        userName = json_dict['userName']
+        userEmail = json_dict['userEmail']
+        userPassword = json_dict['userPassword']
+
+        print(userName + '\n' + userEmail + '\n' + userPassword)
+
+        return jsonify({'didItWork': True})
