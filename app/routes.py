@@ -1,6 +1,7 @@
 """Routes module will have all endpoints associated with the flask application"""
 from app import app, db
 from app.models import User
+from app.datastore import createUser
 from flask import jsonify, request
 import json
 
@@ -34,15 +35,4 @@ def registerUser():
     """registerUser will register the user to project-galaxy"""
     if request.method == "POST":
         json_dict = json.loads(request.data)
-
-        userName = json_dict['userName']
-        userEmail = json_dict['userEmail']
-        userPassword = json_dict['userPassword']
-
-        user = User(username=userName, email=userEmail)
-        user.set_password(userPassword)
-        db.session.add(user)
-        db.session.commit()
-
-        return jsonify({'registrationConfirmed': True})
-    return jsonify({'registrationConfirmed': False})
+        return createUser(json_dict)
