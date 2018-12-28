@@ -7,9 +7,9 @@ from flask import jsonify
 def createUser(json_dict):
     """createUser will only be executed if userName and userEmail are unique and unused."""
     # Sets the userName, userEmail, and userPassword to be used in user creation
-    userName = json_dict['userName']
-    userEmail = json_dict['userEmail']
-    userPassword = json_dict['userPassword']
+    userName = json_dict['username']
+    userEmail = json_dict['useremail']
+    userPassword = json_dict['userpassword']
     # creates the user object and adds the user to the database
     try:
         user = User(username=userName, email=userEmail)
@@ -18,6 +18,6 @@ def createUser(json_dict):
         db.session.commit()
         # confirms the user was added successfully then returns a status code
         if User.query.filter_by(username=userName, email=userEmail).first() is not None:
-            return jsonify({'message': 'User ' + userName + ' has been registered', 'status': 200, 'error': ''})
+            return jsonify({'message': 'User ' + userName + ' has been registered'})
     except:
         return jsonify({'message': 'User ' + userName + ' has failed to register or is already registered.', 'status': 500, 'error': 'Internal Server Error'})
