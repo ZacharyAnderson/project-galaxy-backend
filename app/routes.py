@@ -3,6 +3,7 @@ from app import app, db
 from app.models import User
 from app.datastore import createUser
 from flask import jsonify, request
+from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
 import json
 
 
@@ -24,7 +25,7 @@ def isUsernameUnique(username):
 @app.route('/api/v1.0/registration/email/<email>', methods=['GET'])
 def isEmailUnique(email):
     """isEmailUnique will return a json object if the email trying to be registered is not used."""
-    user = User.query.filter_by(email=email).first()
+    user = User.query.filter_by(email=email.lower()).first()
     if user is not None:
         return jsonify({'isUnique': False})
     return jsonify({'isUnique': True})
@@ -36,3 +37,31 @@ def registerUser():
     if request.method == "POST":
         json_dict = json.loads(request.data)
         return createUser(json_dict)
+
+
+@app.route('/api/v1.0/login', methods=['GET'])
+def login():
+    """login will handle the authentication tokens for the user"""
+    if not request.is_json:
+        return jsonify({"msg": "Missing JSON in request"}), 400
+
+    username = request.json.get('username', None)
+    password = request.json.get('password', None)
+    if not username:
+        return jsonify({"msg": "Missing username parameter"}), 400
+    if not password:
+        return jsonify({"msg": "Missing password parameter"}), 400
+
+    # First test to see if the username is correct
+    user = User.query.filter_by(username=username).first()
+    if user is not None:
+        if user.check_password(password):
+            access_token = create_access_token(identity=username)
+            return jsonify(access_token=access_token), 200
+    # If the username is not correct test if the email is being used
+    elif user is None:
+        user = User.query.filter_by(email=username.lower()).first()
+        if user.check_password(password):
+            access_token = create_access_token(identity=username)
+            return jsonify(access_token=access_token), 200
+    return jsonify({"msg": "Bad username or password"}), 401

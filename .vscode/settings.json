@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "venv/bin/python",
-    "python.linting.pep8Enabled": false,
-    "editor.formatOnSave": true
+  "python.pythonPath": "venv/bin/python",
+  "python.linting.pep8Enabled": false,
+  "editor.formatOnSave": true
 }

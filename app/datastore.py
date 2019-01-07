@@ -8,11 +8,11 @@ def createUser(json_dict):
     """createUser will only be executed if userName and userEmail are unique and unused."""
     # Sets the userName, userEmail, and userPassword to be used in user creation
     userName = json_dict['username']
-    userEmail = json_dict['useremail']
+    userEmail = json_dict['useremail'].lower()
     userPassword = json_dict['userpassword']
     # creates the user object and adds the user to the database
     try:
-        user = User(username=userName, email=userEmail)
+        user = User(username=userName, email=userEmail, displayname=userName)
         user.set_password(userPassword)
         db.session.add(user)
         db.session.commit()
