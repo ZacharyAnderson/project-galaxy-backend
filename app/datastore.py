@@ -18,6 +18,6 @@ def createUser(json_dict):
         db.session.commit()
         # confirms the user was added successfully then returns a status code
         if User.query.filter_by(username=userName, email=userEmail).first() is not None:
-            return jsonify({'message': 'User ' + userName + ' has been registered'})
+            return jsonify({'message': 'User ' + userName + ' has been registered'}), 200
     except:
-        return jsonify({'message': 'User ' + userName + ' has failed to register or is already registered.', 'status': 500, 'error': 'Internal Server Error'})
+        return jsonify({'message': 'User ' + userName + ' has failed to register or is already registered.', 'status': 500, 'error': 'Internal Server Error'}), 500
