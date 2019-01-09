@@ -1,9 +1,11 @@
-"""Routes module will have all endpoints associated with the flask application"""
+"""Routes module will have all endpoints associated with \
+the flask application"""
 from app import app, db
 from app.models import User
 from app.datastore import createUser
 from flask import jsonify, request
-from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
+from flask_jwt_extended import jwt_required, \
+    create_access_token, get_jwt_identity
 import json
 
 
@@ -15,7 +17,8 @@ def index():
 
 @app.route('/api/v1.0/registration/username/<username>', methods=['GET'])
 def isUsernameUnique(username):
-    """isUsernameUnique will return a json object if the username trying to be registered is not used."""
+    """isUsernameUnique will return a json object if the username\
+     trying to be registered is not used."""
     user = User.query.filter_by(username=username).first()
     if user is not None:
         return jsonify({'isUnique': False})
@@ -24,7 +27,8 @@ def isUsernameUnique(username):
 
 @app.route('/api/v1.0/registration/email/<email>', methods=['GET'])
 def isEmailUnique(email):
-    """isEmailUnique will return a json object if the email trying to be registered is not used."""
+    """isEmailUnique will return a json object if the email\
+     trying to be registered is not used."""
     user = User.query.filter_by(email=email.lower()).first()
     if user is not None:
         return jsonify({'isUnique': False})

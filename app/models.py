@@ -4,7 +4,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class User(db.Model):
-    """User class will contain id, username, email, and password for individual users"""
+    """User class will contain id, username, email,\
+     and password for individual users"""
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     displayname = db.Column(db.String(64), index=True, unique=True)
