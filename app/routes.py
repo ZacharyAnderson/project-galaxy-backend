@@ -67,3 +67,12 @@ def login():
             access_token = create_access_token(identity=username)
             return jsonify(access_token=access_token), 200
     return jsonify({"msg": "Bad username or password"}), 401
+
+
+@app.route('/api/v1.0/user', methods=["GET"])
+@jwt_required
+def user_settings():
+    """Route will show user settings"""
+    current_user = get_jwt_identity()
+    user = User.query.filter_by(username=current_user).first()
+    return jsonify(current_user=current_user, email=user.email), 200
