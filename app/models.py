@@ -1,6 +1,7 @@
 """This module will contain all database models"""
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
+from hashlib import md5
 
 
 class User(db.Model):
@@ -21,3 +22,8 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
+
+    def avatar(self, size):
+        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+        return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'\
+            .format(digest, size)
