@@ -64,14 +64,15 @@ def login():
                            email=user.email,
                            avatar=user.avatar(80)), 200
     # If the username is not correct test if the email is being used
-    elif user is None:
+    else:
         user = User.query.filter_by(email=username.lower()).first()
-        if user.check_password(password):
-            access_token = create_access_token(identity=username)
-            return jsonify(access_token=access_token,
-                           current_user=user.displayname,
-                           email=user.email,
-                           avatar=user.avatar(80)), 200
+        if user is not None:
+            if user.check_password(password):
+                access_token = create_access_token(identity=username)
+                return jsonify(access_token=access_token,
+                               current_user=user.displayname,
+                               email=user.email,
+                               avatar=user.avatar(80)), 200
     return jsonify({"msg": "Bad username or password"}), 401
 
 
