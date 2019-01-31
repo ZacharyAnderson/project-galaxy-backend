@@ -46,25 +46,12 @@ def registerUser():
 @app.route('/api/v1.0/login', methods=['GET'])
 def login():
     """login will handle the authentication tokens for the user"""
-    try:
-        username = request.headers.get('username', None)
-        password = request.headers.get('password', None)
-        if not username:
-            return jsonify({"msg": "Missing username parameter"}), 400
-        if not password:
-            return jsonify({"msg": "Missing password parameter"}), 400
-
-<<<<<<< HEAD
-        # First test to see if the username is correct
-        user = User.query.filter_by(username=username).first()
-=======
     username = request.headers.get('username', None)
     password = request.headers.get('password', None)
     if not username:
         return jsonify({"msg": "Missing username parameter"}), 400
     if not password:
         return jsonify({"msg": "Missing password parameter"}), 400
-
     # First test to see if the username is correct
     user = User.query.filter_by(username=username).first()
     if user is not None:
@@ -75,32 +62,15 @@ def login():
                            email=user.email,
                            avatar=user.avatar(80)), 200
     # If the username is not correct test if the email is being used
-    else:
-        user = User.query.filter_by(email=username.lower()).first()
->>>>>>> e5868803238f60f1616f0e3667fe9c7ea3401932
-        if user is not None:
-            if user.check_password(password):
-                access_token = create_access_token(identity=username)
-                return jsonify(access_token=access_token,
-                               current_user=user.displayname,
-                               email=user.email,
-                               avatar=user.avatar(80)), 200
-<<<<<<< HEAD
-        # If the username is not correct test if the email is being used
-        elif user is None:
-            user = User.query.filter_by(email=username.lower()).first()
-            if user.check_password(password):
-                access_token = create_access_token(identity=username)
-                return jsonify(access_token=access_token,
-                               current_user=user.displayname,
-                               email=user.email,
-                               avatar=user.avatar(80)), 200
-        return jsonify({"msg": "Bad username or password"}), 401
-    except:
-        return jsonify({"msg": "Bad username or password"}), 401
-=======
+    user = User.query.filter_by(email=username.lower()).first()
+    if user is not None:
+        if user.check_password(password):
+            access_token = create_access_token(identity=username)
+            return jsonify(access_token=access_token,
+                           current_user=user.displayname,
+                           email=user.email,
+                           avatar=user.avatar(80)), 200
     return jsonify({"msg": "Bad username or password"}), 401
->>>>>>> e5868803238f60f1616f0e3667fe9c7ea3401932
 
 
 @app.route('/api/v1.0/user', methods=["GET"])
