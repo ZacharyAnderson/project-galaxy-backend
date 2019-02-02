@@ -21,9 +21,26 @@ def createUser(json_dict):
         # confirms the user was added successfully then returns a status code
         if User.query.filter_by(username=userName, email=userEmail)\
                 .first() is not None:
-            return jsonify({'message': 'User ' + userName +
+            return jsonify({'msg': 'User ' + userName +
                             ' has been registered'}), 200
     except:
-        return jsonify({'message': 'User ' + userName +
+        return jsonify({'msg': 'User ' + userName +
                         ' has failed to register or is already registered.',
                         'status': 500, 'error': 'Internal Server Error'}), 500
+
+
+def changeUserPassword(json_dict):
+    """changeUserPassword will recieve a json object that will\
+     confirm the old password and then set the new password."""
+    userName = json_dict['username']
+    oldPassword = json_dict['oldPassword']
+    newPassword = json_dict['newPassword']
+
+    user = User.query.filter_by(username=userName).first()
+    if (user.check_password(oldPassword)):
+        user.set_password(newPassword)
+        db.session.commit()
+        return jsonify({'msg': 'User ' + userName +
+                        ' has successfully updated their password.'}), 200
+    return jsonify({'msg': 'User ' + userName +
+                    ' has failed to update their password.'}), 401

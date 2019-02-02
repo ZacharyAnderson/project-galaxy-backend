@@ -2,7 +2,7 @@
 the flask application"""
 from app import app, db
 from app.models import User
-from app.datastore import createUser
+from app.datastore import createUser, changeUserPassword
 from flask import jsonify, request
 from flask_jwt_extended import jwt_required, \
     create_access_token, get_jwt_identity
@@ -71,6 +71,17 @@ def login():
                            email=user.email,
                            avatar=user.avatar(80)), 200
     return jsonify({"msg": "Bad username or password"}), 401
+
+
+@app.route('/api/v1.0/user/resetpassword', methods=['POST'])
+@jwt_required
+def reset_password_request():
+    """Change password will change the users password"""
+    current_user = get_jwt_identity()
+    if (request.data):
+        json_dict = json.loads(request.data)
+        return changeUserPassword(json_dict)
+    return jsonify({'msg': 'missing json body.'}), 401
 
 
 @app.route('/api/v1.0/user', methods=["GET"])
