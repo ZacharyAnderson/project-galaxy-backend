@@ -11,6 +11,10 @@ class Config(object):
     # SECRET_KEY = os.environ.get('PROJECT-GALAXY-BACKEND-SECRET-KEY')
     # For now we will set the key manually for Development purposes
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+    S3_BUCKET = os.environ.get('PROJECT_GALAXY_TEST_BUCKET')
+    AWS_KEY = os.environ.get('AWS_ACCESS_KEY')
+    AWS_SECRET_KEY = os.environ.get('AWS_SECRET_KEY')
+    S3_LOCATION = 'http://{}.s3.amazonaws.com/'.format(S3_BUCKET)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = '\x82\xc5\xac-EC\xf5\x92\x11w\xe2\x18 )k\x82.\xcc\xf8 \
     g7fA\x86~\xa7c\xd6\xfdQ\x7f\xed\xe2e21\xd5\xa5\xf6QzMg?\x85\x1e\xd5'

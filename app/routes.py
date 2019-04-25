@@ -6,6 +6,8 @@ from app.datastore import createUser, changeUserPassword
 from flask import jsonify, request
 from flask_jwt_extended import jwt_required, \
     create_access_token, get_jwt_identity
+from werkzeug.utils import secure_filename
+from .recipes_bucket import upload_file_to_s3, allowed_file
 import json
 
 
@@ -91,3 +93,21 @@ def user_settings():
     current_user = get_jwt_identity()
     user = User.query.filter_by(username=current_user).first()
     return jsonify(current_user=current_user, email=user.email), 200
+
+
+@app.route('/api/v1.0/user/recipe', methods=["POST"])
+def upload_file():
+    """POST Route will allow uploading of recipe files"""
+    if "user_file" not in request.files:
+        return "No user_file key in request.files"
+    file = request.files["user_file"]
+
+    if file.filename == "":
+        return "Please selet a file"
+
+    if file and allowed_file(file.filename):
+        file.filename = secure_filename(file.filename)
+        output = upload_file_to_s3(file, app.config["S3_BUCKET"])
+        return jsonify(file_location=str(output)), 200
+    else:
+        return jsonify({'msg': "Problemo"}), 401
