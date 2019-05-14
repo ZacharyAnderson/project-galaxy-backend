@@ -7,7 +7,7 @@ from flask import jsonify, request
 from flask_jwt_extended import jwt_required, \
     create_access_token, get_jwt_identity
 from werkzeug.utils import secure_filename
-from .recipes_bucket import upload_file_to_s3, allowed_file
+from .recipes_bucket import upload_file_to_s3, allowed_file, list_users_files
 import json
 
 
@@ -96,6 +96,7 @@ def user_settings():
 
 
 @app.route('/api/v1.0/user/recipe', methods=["POST"])
+@jwt_required
 def upload_file():
     """POST Route will allow uploading of recipe files"""
     if "user_file" not in request.files:
@@ -105,9 +106,23 @@ def upload_file():
     if file.filename == "":
         return "Please selet a file"
 
+    current_user = get_jwt_identity()
+    user = User.query.filter_by(username=current_user).first()
+
     if file and allowed_file(file.filename):
         file.filename = secure_filename(file.filename)
-        output = upload_file_to_s3(file, app.config["S3_BUCKET"])
+        output = upload_file_to_s3(
+            file, app.config["S3_BUCKET"], user.username)
         return jsonify(file_location=str(output)), 200
     else:
-        return jsonify({'msg': "Problemo"}), 401
+        return jsonify({'msg': "File does not exist or the file type\
+                        is not allowed."}), 401
+
+
+@app.route('/api/v1.0/<username>/recipes', methods=["GET"])
+def list_files(username):
+    """GET Route lists all users uploaded files.
+       Returns a list of tuples with(key, datetime, file_size)
+    """
+    file_list = list_users_files(app.config["S3_BUCKET"], username)
+    return str(file_list)
